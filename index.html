@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نادي عباقرة الروبوت - حقيبة المستقبل</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+            background-color: #0f172a;
+        }
+        .hero-gradient {
+            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+        }
+        
+        /* تأثيرات الحقيبة التفاعلية */
+        .bag-container {
+            position: relative;
+            height: 800px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            perspective: 1000px;
+        }
+
+        .central-bag {
+            z-index: 50;
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            filter: drop-shadow(0 0 50px rgba(59, 130, 246, 0.6));
+            cursor: pointer;
+        }
+
+        .central-bag:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .resource-node {
+            position: absolute;
+            transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            opacity: 0;
+            transform: scale(0) translateZ(-100px);
+            pointer-events: none;
+        }
+
+        .bag-container.active .resource-node {
+            opacity: 1;
+            transform: scale(1) translateZ(0);
+            pointer-events: auto;
+        }
+
+        /* تصميم الخانات الزجاجي الاحترافي - بدون إطارات سوداء */
+        .node-content {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 15px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 160px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            color: white;
+        }
+
+        .node-content:hover {
+            background: rgba(59, 130, 246, 0.2);
+            border-color: rgba(59, 130, 246, 0.5);
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+        }
+
+        /* أنيميشن الطفو */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .floating {
+            animation: float 5s ease-in-out infinite;
+        }
+
+        /* نبضات الطاقة الخلفية */
+        .pulse-ring {
+            position: absolute;
+            border: 2px solid #3b82f6;
+            border-radius: 50%;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .bag-container.active .pulse-ring {
+            animation: pulse 4s linear infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.5); opacity: 0.5; }
+            100% { transform: scale(2.5); opacity: 0; }
+        }
+    </style>
+</head>
+<body class="text-slate-100">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-[100] bg-slate-900/80 backdrop-blur-lg border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-6 flex justify-between h-20 items-center">
+            <div class="flex items-center space-x-3 space-x-reverse">
+                <div class="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/40">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                    </svg>
+                </div>
+                <span class="text-2xl font-black bg-clip-text text-transparent bg-gradient-to-l from-blue-400 to-white">عباقرة الروبوت</span>
+            </div>
+            <div class="hidden md:flex space-x-8 space-x-reverse font-bold text-sm">
+                <a href="#home" class="hover:text-blue-400 transition">الرئيسية</a>
+                <a href="#resources" class="hover:text-blue-400 transition">حقيبة المستقبل</a>
+                <a href="#contact" class="hover:text-blue-400 transition font-medium bg-blue-600 px-4 py-2 rounded-lg">انضم إلينا</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-gradient min-h-[60vh] flex items-center pt-24">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <h1 class="text-5xl md:text-7xl font-black mb-6">
+                حقيبة المستقبل <br>
+                <span class="text-blue-500">مشاريع العباقرة</span>
+            </h1>
+            <p class="text-slate-400 text-xl max-w-2xl mx-auto">
+                مجموعة مختارة من المواقع والمشاريع لطلاب الصف الخامس وحتى الثامن.
+            </p>
+        </div>
+    </section>
+
+    <!-- Interactive Bag Section -->
+    <section id="resources" class="py-10 relative">
+        <div class="text-center mb-4">
+            <button id="activateBtn" class="bg-blue-600/20 text-blue-400 border border-blue-600/50 px-6 py-2 rounded-full hover:bg-blue-600 hover:text-white transition-all font-bold">
+                اضغط لفتح الحقيبة
+            </button>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="bag-container" id="bagArea">
+                <div class="pulse-ring w-40 h-40"></div>
+                <div class="pulse-ring w-40 h-40" style="animation-delay: 1s"></div>
+                <div class="pulse-ring w-40 h-40" style="animation-delay: 2s"></div>
+
+                <!-- Central Professional Bag SVG -->
+                <div class="central-bag" id="mainBag">
+                    <svg width="220" height="220" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="40" y="70" width="120" height="90" rx="15" fill="#1e40af" stroke="#3b82f6" stroke-width="4"/>
+                        <path d="M75 70V50C75 40 85 30 100 30C115 30 125 40 125 50V70" stroke="#3b82f6" stroke-width="6" stroke-linecap="round"/>
+                        <rect x="85" y="100" width="30" height="20" rx="5" fill="#3b82f6"/>
+                        <path d="M40 90H160" stroke="#1d4ed8" stroke-width="2"/>
+                        <circle cx="100" cy="110" r="4" fill="white" class="animate-pulse"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-slate-950 py-12 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="text-slate-500 font-bold">نادي عباقرة الروبوت - تمكين جيل المستقبل</p>
+        </div>
+    </footer>
+
+    <script>
+        // العناوين الجديدة من الصورة
+        const resources = [
+            { name: "ابن روبوتك", icon: "🛠️", color: "#3b82f6" },
+            { name: "الروبوت الذي بداخلي", icon: "🧠", color: "#6366f1" },
+            { name: "المحقق الذكي", icon: "🔍", color: "#2dd4bf" },
+            { name: "تخصصك المناسب", icon: "🎯", color: "#f59e0b" },
+            { name: "كيف يرى الروبوت عالمنا", icon: "👁️", color: "#ec4899" },
+            { name: "لعبة المسابقة بين الروبوتات", icon: "🎮", color: "#8b5cf6" },
+            { name: "مصنع الشوكولاتة (السرب الروبوتي)", icon: "🍫", color: "#fb7185" },
+            { name: "مطبخ الروبوت", icon: "🍳", color: "#10b981" },
+            { name: "هندسة شكل الروبوت", icon: "📐", color: "#facc15" },
+            { name: "مستقبلنا مع الروبوت", icon: "🚀", color: "#a855f7" }
+        ];
+
+        const bagArea = document.getElementById('bagArea');
+        const mainBag = document.getElementById('mainBag');
+        const activateBtn = document.getElementById('activateBtn');
+
+        function initResources() {
+            const radius = 320; 
+            const centerX = bagArea.offsetWidth / 2;
+            const centerY = bagArea.offsetHeight / 2;
+
+            resources.forEach((res, i) => {
+                const angle = (i / resources.length) * Math.PI * 2;
+                const x = Math.cos(angle) * radius;
+                const y = Math.sin(angle) * radius;
+
+                const node = document.createElement('div');
+                node.className = 'resource-node floating';
+                node.style.left = `calc(50% + ${x}px - 80px)`;
+                node.style.top = `calc(50% + ${y}px - 60px)`;
+                node.style.animationDelay = `${i * 0.3}s`;
+
+                node.innerHTML = `
+                    <div class="node-content">
+                        <span class="text-4xl mb-2">${res.icon}</span>
+                        <span class="font-bold text-xs text-center leading-tight">${res.name}</span>
+                        <div class="w-8 h-1 bg-blue-500 mt-2 rounded-full opacity-50"></div>
+                    </div>
+                `;
+
+                bagArea.appendChild(node);
+            });
+        }
+
+        let isOpen = false;
+        function toggleBag() {
+            isOpen = !isOpen;
+            if (isOpen) {
+                bagArea.classList.add('active');
+                mainBag.style.transform = 'scale(1.2) rotate(10deg)';
+                activateBtn.textContent = 'إغلاق الحقيبة';
+            } else {
+                bagArea.classList.remove('active');
+                mainBag.style.transform = 'scale(1) rotate(0deg)';
+                activateBtn.textContent = 'اضغط لفتح الحقيبة';
+            }
+        }
+
+        mainBag.addEventListener('click', toggleBag);
+        activateBtn.addEventListener('click', toggleBag);
+
+        window.onload = initResources;
+        window.onresize = () => {
+            const nodes = document.querySelectorAll('.resource-node');
+            nodes.forEach(n => n.remove());
+            initResources();
+        };
+    </script>
+</body>
+</html>
