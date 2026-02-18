@@ -3,248 +3,402 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نادي عباقرة الروبوت - حقيبة المستقبل</title>
+    <title>تحدي الحلوى المسمومة - النسخة الأنثوية</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --p1-color: #a855f7;
+            --p2-color: #ec4899;
+        }
+
         body {
-            font-family: 'Cairo', sans-serif;
-            scroll-behavior: smooth;
-            overflow-x: hidden;
-            background-color: #0f172a;
-        }
-        .hero-gradient {
-            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
-        }
-        
-        /* تأثيرات الحقيبة التفاعلية */
-        .bag-container {
-            position: relative;
-            height: 800px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            perspective: 1000px;
+            font-family: 'Tajawal', sans-serif;
+            background-color: #020617;
+            color: white;
+            overflow: hidden;
+            margin: 0;
+            height: 100vh;
+            background: radial-gradient(circle at center, #1e1b4b 0%, #020617 100%);
         }
 
-        .central-bag {
-            z-index: 50;
-            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-            filter: drop-shadow(0 0 50px rgba(59, 130, 246, 0.6));
-            cursor: pointer;
-        }
-
-        .central-bag:hover {
-            transform: scale(1.1) rotate(5deg);
-        }
-
-        .resource-node {
-            position: absolute;
-            transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            opacity: 0;
-            transform: scale(0) translateZ(-100px);
+        .bg-glow {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+            opacity: 0.1;
             pointer-events: none;
         }
 
-        .bag-container.active .resource-node {
-            opacity: 1;
-            transform: scale(1) translateZ(0);
-            pointer-events: auto;
-        }
-
-        /* تصميم الخانات الزجاجي الاحترافي - بدون إطارات سوداء */
-        .node-content {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            padding: 15px;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        /* Robot Styles */
+        .robot-container {
+            position: fixed;
+            bottom: 40px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            width: 160px;
-            cursor: pointer;
-            transition: all 0.4s ease;
-            color: white;
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 20;
+        }
+        #robot-p1 { left: 80px; }
+        #robot-p2 { right: 80px; }
+
+        .robot-body {
+            width: 100px;
+            height: 120px;
+            border-radius: 40px 40px 20px 20px; /* شكل أكثر انسيابية */
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            animation: idleRobot 3s infinite ease-in-out;
+            border: 2px solid rgba(255,255,255,0.2);
         }
 
-        .node-content:hover {
-            background: rgba(59, 130, 246, 0.2);
-            border-color: rgba(59, 130, 246, 0.5);
-            transform: translateY(-10px) scale(1.05);
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+        @keyframes idleRobot {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(2deg); }
         }
 
-        /* أنيميشن الطفو */
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-        }
-
-        .floating {
-            animation: float 5s ease-in-out infinite;
-        }
-
-        /* نبضات الطاقة الخلفية */
-        .pulse-ring {
+        /* الفيونكة (Bow) */
+        .bow {
             position: absolute;
-            border: 2px solid #3b82f6;
+            top: -15px;
+            font-size: 24px;
+            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.5));
+        }
+
+        .robot-face {
+            width: 75px;
+            height: 45px;
+            background: #0f172a;
+            border-radius: 15px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+        }
+
+        .eye-wrapper {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* الرموش */
+        .lashes {
+            position: absolute;
+            top: -8px;
+            font-size: 10px;
+            color: white;
+            opacity: 0.8;
+        }
+
+        .eye {
+            width: 16px;
+            height: 16px;
+            background: #fff;
             border-radius: 50%;
+            box-shadow: 0 0 15px #fff;
+            transition: all 0.3s ease;
+        }
+
+        .eye.dead {
+            background: transparent !important;
+            box-shadow: none !important;
+        }
+        .eye.dead::before {
+            content: '×';
+            color: #ef4444;
+            font-size: 24px;
+            position: absolute;
+            top: -5px; left: -2px;
+        }
+
+        .speech-bubble {
+            background: rgba(255, 255, 255, 0.95);
+            color: #1e293b;
+            padding: 10px 18px;
+            border-radius: 18px;
+            margin-bottom: 15px;
+            font-weight: 700;
+            position: relative;
             opacity: 0;
-            pointer-events: none;
+            transform: scale(0.8);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            font-size: 0.85rem;
+            text-align: center;
         }
 
-        .bag-container.active .pulse-ring {
-            animation: pulse 4s linear infinite;
+        .speech-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 8px solid rgba(255, 255, 255, 0.95);
         }
 
-        @keyframes pulse {
-            0% { transform: scale(0.5); opacity: 0.5; }
-            100% { transform: scale(2.5); opacity: 0; }
+        .active-robot .speech-bubble {
+            opacity: 1;
+            transform: scale(1);
         }
+
+        .active-robot .robot-body {
+            transform: scale(1.1);
+            filter: brightness(1.15);
+            border-color: #fff;
+            box-shadow: 0 0 30px currentColor;
+        }
+
+        /* Candy Grid */
+        .candy-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+            max-width: 550px;
+            margin: 30px auto;
+            position: relative;
+            z-index: 15;
+        }
+
+        .candy-item {
+            aspect-ratio: 1;
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(8px);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 2.2rem;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .candy-item:hover {
+            transform: translateY(-5px) scale(1.05);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .glitch { animation: glitchAnim 0.1s infinite; }
+        @keyframes glitchAnim {
+            0% { transform: translate(0) rotate(1deg); }
+            50% { transform: translate(-3px, 3px) rotate(-1deg); }
+            100% { transform: translate(3px, -3px) rotate(1deg); }
+        }
+
+        #custom-alert {
+            display: none;
+            position: fixed;
+            top: 20%; left: 50%; transform: translateX(-50%);
+            background: #fff1f2;
+            color: #be123c;
+            padding: 15px 30px;
+            border-radius: 20px;
+            border: 2px solid #fb7185;
+            font-weight: bold;
+            z-index: 300;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            text-align: center;
+            animation: slideDown 0.4s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { transform: translate(-50%, -100%); opacity: 0; }
+            to { transform: translate(-50%, 0); opacity: 1; }
+        }
+
+        .reset-flash { animation: flash 0.5s; }
+        @keyframes flash { 0% { opacity: 0.5; } 100% { opacity: 1; } }
     </style>
 </head>
-<body class="text-slate-100">
+<body>
 
-    <!-- Navbar -->
-    <nav class="fixed w-full z-[100] bg-slate-900/80 backdrop-blur-lg border-b border-white/10">
-        <div class="max-w-7xl mx-auto px-6 flex justify-between h-20 items-center">
-            <div class="flex items-center space-x-3 space-x-reverse">
-                <div class="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/40">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-                    </svg>
-                </div>
-                <span class="text-2xl font-black bg-clip-text text-transparent bg-gradient-to-l from-blue-400 to-white">عباقرة الروبوت</span>
+<div class="bg-glow"></div>
+<div id="error-overlay" class="fixed inset-0 bg-red-500/10 hidden z-50 pointer-events-none"></div>
+<div id="custom-alert">يا إلهي! لقد اخترتما نفس الحلوى!<br>يجب عليكما إعادة التفكير من جديد أيتها الذكيات. ✨</div>
+
+<div class="p-6 text-center relative z-20">
+    <h1 class="text-3xl font-bold bg-gradient-to-r from-purple-300 via-pink-300 to-purple-300 bg-clip-text text-transparent mb-1">تحدي الطالبات الذكيات</h1>
+    <div class="inline-block px-4 py-1 bg-white/5 backdrop-blur-md rounded-full border border-white/10">
+        <p id="game-msg" class="text-pink-300 font-bold text-xs">المرحلة الأولى: إخفاء السم</p>
+    </div>
+</div>
+
+<!-- Robot 1 (Purple - Girl) -->
+<div id="robot-p1" class="robot-container active-robot" style="color: var(--p1-color);">
+    <div class="speech-bubble" id="p1-bubble">سأضع فخي أولاً! ✨</div>
+    <div class="robot-body bg-purple-600">
+        <div class="bow">🎀</div>
+        <div class="robot-face">
+            <div class="eye-wrapper">
+                <div class="lashes">✨</div>
+                <div class="eye" id="p1-eye-l"></div>
             </div>
-            <div class="hidden md:flex space-x-8 space-x-reverse font-bold text-sm">
-                <a href="#home" class="hover:text-blue-400 transition">الرئيسية</a>
-                <a href="#resources" class="hover:text-blue-400 transition">حقيبة المستقبل</a>
-                <a href="#contact" class="hover:text-blue-400 transition font-medium bg-blue-600 px-4 py-2 rounded-lg">انضم إلينا</a>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Hero Section -->
-    <section id="home" class="hero-gradient min-h-[60vh] flex items-center pt-24">
-        <div class="max-w-7xl mx-auto px-4 text-center">
-            <h1 class="text-5xl md:text-7xl font-black mb-6">
-                حقيبة المستقبل <br>
-                <span class="text-blue-500">مشاريع العباقرة</span>
-            </h1>
-            <p class="text-slate-400 text-xl max-w-2xl mx-auto">
-                مجموعة مختارة من المواقع والمشاريع لطلاب الصف الخامس وحتى الثامن.
-            </p>
-        </div>
-    </section>
-
-    <!-- Interactive Bag Section -->
-    <section id="resources" class="py-10 relative">
-        <div class="text-center mb-4">
-            <button id="activateBtn" class="bg-blue-600/20 text-blue-400 border border-blue-600/50 px-6 py-2 rounded-full hover:bg-blue-600 hover:text-white transition-all font-bold">
-                اضغط لفتح الحقيبة
-            </button>
-        </div>
-
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="bag-container" id="bagArea">
-                <div class="pulse-ring w-40 h-40"></div>
-                <div class="pulse-ring w-40 h-40" style="animation-delay: 1s"></div>
-                <div class="pulse-ring w-40 h-40" style="animation-delay: 2s"></div>
-
-                <!-- Central Professional Bag SVG -->
-                <div class="central-bag" id="mainBag">
-                    <svg width="220" height="220" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <rect x="40" y="70" width="120" height="90" rx="15" fill="#1e40af" stroke="#3b82f6" stroke-width="4"/>
-                        <path d="M75 70V50C75 40 85 30 100 30C115 30 125 40 125 50V70" stroke="#3b82f6" stroke-width="6" stroke-linecap="round"/>
-                        <rect x="85" y="100" width="30" height="20" rx="5" fill="#3b82f6"/>
-                        <path d="M40 90H160" stroke="#1d4ed8" stroke-width="2"/>
-                        <circle cx="100" cy="110" r="4" fill="white" class="animate-pulse"/>
-                    </svg>
-                </div>
+            <div class="eye-wrapper">
+                <div class="lashes">✨</div>
+                <div class="eye" id="p1-eye-r"></div>
             </div>
         </div>
-    </section>
+        <div class="mt-2 font-bold text-white text-[10px] uppercase">Lulu-Bot</div>
+    </div>
+</div>
 
-    <!-- Footer -->
-    <footer class="bg-slate-950 py-12 border-t border-white/5">
-        <div class="max-w-7xl mx-auto px-4 text-center">
-            <p class="text-slate-500 font-bold">نادي عباقرة الروبوت - تمكين جيل المستقبل</p>
+<!-- Robot 2 (Pink - Girl) -->
+<div id="robot-p2" class="robot-container" style="color: var(--p2-color);">
+    <div class="speech-bubble" id="p2-bubble">أنا مستعدة للمنافسة! 💅</div>
+    <div class="robot-body bg-pink-500">
+        <div class="bow">🎀</div>
+        <div class="robot-face">
+            <div class="eye-wrapper">
+                <div class="lashes">✨</div>
+                <div class="eye" id="p2-eye-l"></div>
+            </div>
+            <div class="eye-wrapper">
+                <div class="lashes">✨</div>
+                <div class="eye" id="p2-eye-r"></div>
+            </div>
         </div>
-    </footer>
+        <div class="mt-2 font-bold text-white text-[10px] uppercase">Mimi-Bot</div>
+    </div>
+</div>
 
-    <script>
-        // العناوين الجديدة من الصورة
-        const resources = [
-            { name: "ابن روبوتك", icon: "🛠️", color: "#3b82f6" },
-            { name: "الروبوت الذي بداخلي", icon: "🧠", color: "#6366f1" },
-            { name: "المحقق الذكي", icon: "🔍", color: "#2dd4bf" },
-            { name: "تخصصك المناسب", icon: "🎯", color: "#f59e0b" },
-            { name: "كيف يرى الروبوت عالمنا", icon: "👁️", color: "#ec4899" },
-            { name: "لعبة المسابقة بين الروبوتات", icon: "🎮", color: "#8b5cf6" },
-            { name: "مصنع الشوكولاتة (السرب الروبوتي)", icon: "🍫", color: "#fb7185" },
-            { name: "مطبخ الروبوت", icon: "🍳", color: "#10b981" },
-            { name: "هندسة شكل الروبوت", icon: "📐", color: "#facc15" },
-            { name: "مستقبلنا مع الروبوت", icon: "🚀", color: "#a855f7" }
-        ];
+<div id="candy-container" class="candy-grid"></div>
 
-        const bagArea = document.getElementById('bagArea');
-        const mainBag = document.getElementById('mainBag');
-        const activateBtn = document.getElementById('activateBtn');
+<!-- Modal -->
+<div id="result-overlay" class="fixed inset-0 bg-slate-900/95 backdrop-blur-md flex items-center justify-center z-[200] hidden">
+    <div class="text-center p-8 bg-white/10 border border-white/20 rounded-[2rem] shadow-2xl">
+        <div class="text-5xl mb-4">💔</div>
+        <h2 class="text-3xl font-bold text-pink-400 mb-2">للأسف يا جميلة!</h2>
+        <p id="result-desc" class="text-slate-200 mb-6 font-medium"></p>
+        <button onclick="location.reload()" class="bg-gradient-to-r from-purple-500 to-pink-500 px-8 py-3 rounded-xl font-bold text-white transition-transform active:scale-95">
+            إعادة المحاولة ✨
+        </button>
+    </div>
+</div>
 
-        function initResources() {
-            const radius = 320; 
-            const centerX = bagArea.offsetWidth / 2;
-            const centerY = bagArea.offsetHeight / 2;
+<script>
+    const candies = ['🍬', '🍭', '🧁', '🍩', '🍫', '🍪', '🍮', '🍰', '🍡', '🍦'];
+    let p1Poison = -1, p2Poison = -1;
+    let gameState = 'p1_setup'; 
+    let currentPlayer = 1;
 
-            resources.forEach((res, i) => {
-                const angle = (i / resources.length) * Math.PI * 2;
-                const x = Math.cos(angle) * radius;
-                const y = Math.sin(angle) * radius;
+    const container = document.getElementById('candy-container');
+    const msg = document.getElementById('game-msg');
+    const customAlert = document.getElementById('custom-alert');
+    
+    function init() {
+        container.innerHTML = '';
+        candies.forEach((candy, i) => {
+            const el = document.createElement('div');
+            el.className = 'candy-item';
+            el.innerHTML = candy;
+            el.onclick = () => handleClick(i, el);
+            container.appendChild(el);
+        });
+    }
 
-                const node = document.createElement('div');
-                node.className = 'resource-node floating';
-                node.style.left = `calc(50% + ${x}px - 80px)`;
-                node.style.top = `calc(50% + ${y}px - 60px)`;
-                node.style.animationDelay = `${i * 0.3}s`;
+    function resetToStart() {
+        p1Poison = -1; p2Poison = -1;
+        gameState = 'p1_setup'; currentPlayer = 1;
+        document.body.classList.add('reset-flash');
+        setTimeout(() => document.body.classList.remove('reset-flash'), 500);
+        init();
+        toggleRobot(1);
+        msg.innerText = "أعيدوا المحاولة: إخفاء السم";
+        updateSpeech("أوه! تفاهمنا كبير جداً! 💖", "فلنختر حلوى أخرى يا صديقتي.");
+    }
 
-                node.innerHTML = `
-                    <div class="node-content">
-                        <span class="text-4xl mb-2">${res.icon}</span>
-                        <span class="font-bold text-xs text-center leading-tight">${res.name}</span>
-                        <div class="w-8 h-1 bg-blue-500 mt-2 rounded-full opacity-50"></div>
-                    </div>
-                `;
+    function updateSpeech(p1Text, p2Text) {
+        document.getElementById('p1-bubble').innerText = p1Text;
+        document.getElementById('p2-bubble').innerText = p2Text;
+    }
 
-                bagArea.appendChild(node);
-            });
+    function handleClick(index, el) {
+        if (gameState === 'p1_setup') {
+            p1Poison = index;
+            el.style.borderColor = 'var(--p1-color)';
+            msg.innerText = "اللاعبة الأولى أتمت المهمة!";
+            updateSpeech("لقد أخفيتُ سري بنجاح! 🎀", "دوري الآن لأضع لمستي!");
+            setTimeout(() => {
+                el.style.borderColor = 'rgba(255,255,255,0.1)';
+                gameState = 'p2_setup'; currentPlayer = 2;
+                toggleRobot(2);
+            }, 800);
+        } 
+        else if (gameState === 'p2_setup') {
+            if (index === p1Poison) {
+                customAlert.style.display = 'block';
+                setTimeout(() => { customAlert.style.display = 'none'; resetToStart(); }, 2500);
+                return;
+            }
+            p2Poison = index;
+            el.style.borderColor = 'var(--p2-color)';
+            msg.innerText = "اللاعبة الثانية أتمت المهمة!";
+            updateSpeech("استعدي للمنافسة القوية!", "تم تلغيم الحلوى أيتها الذكية!");
+            setTimeout(() => {
+                el.style.borderColor = 'rgba(255,255,255,0.1)';
+                gameState = 'playing'; currentPlayer = 1;
+                toggleRobot(1);
+                msg.innerText = "وقت البحث: احذري السم!";
+                updateSpeech("سأكون حذرة جداً.. 💅", "أتمنى لكِ حظاً سعيداً!");
+            }, 800);
         }
+        else if (gameState === 'playing') {
+            if (el.classList.contains('revealed')) return;
+            el.classList.add('revealed');
 
-        let isOpen = false;
-        function toggleBag() {
-            isOpen = !isOpen;
-            if (isOpen) {
-                bagArea.classList.add('active');
-                mainBag.style.transform = 'scale(1.2) rotate(10deg)';
-                activateBtn.textContent = 'إغلاق الحقيبة';
+            const hitP1Poison = (index === p1Poison);
+            const hitP2Poison = (index === p2Poison);
+
+            if (hitP1Poison || hitP2Poison) {
+                let reason = "";
+                if (currentPlayer === 1 && hitP1Poison) reason = "أوه عزيزتي! لقد نسيتِ مكان فخكِ الخاص! 💔";
+                else if (currentPlayer === 2 && hitP2Poison) reason = "للأسف يا جميلة! لقد اخترتِ الحلوى التي سممتِها!";
+                else reason = `لقد كشفتكِ صديقتكِ بذكائها! حظاً أوفر في المرة القادمة. ✨`;
+                gameOver(currentPlayer, reason);
             } else {
-                bagArea.classList.remove('active');
-                mainBag.style.transform = 'scale(1) rotate(0deg)';
-                activateBtn.textContent = 'اضغط لفتح الحقيبة';
+                el.innerHTML = '💖';
+                el.style.background = 'rgba(236, 72, 153, 0.1)';
+                currentPlayer = currentPlayer === 1 ? 2 : 1;
+                toggleRobot(currentPlayer);
+                updateSpeech(
+                    currentPlayer === 1 ? "دوري الآن يا بطلة!" : "لقد نجوتِ بذكاء! ✨",
+                    currentPlayer === 2 ? "سأكشف القطعة التالية!" : "أداءٌ رائع حقاً!"
+                );
             }
         }
+    }
 
-        mainBag.addEventListener('click', toggleBag);
-        activateBtn.addEventListener('click', toggleBag);
+    function toggleRobot(id) {
+        document.getElementById('robot-p1').classList.toggle('active-robot', id === 1);
+        document.getElementById('robot-p2').classList.toggle('active-robot', id === 2);
+    }
 
-        window.onload = initResources;
-        window.onresize = () => {
-            const nodes = document.querySelectorAll('.resource-node');
-            nodes.forEach(n => n.remove());
-            initResources();
-        };
-    </script>
+    function gameOver(id, reason) {
+        const robot = document.getElementById(`robot-${id === 1 ? 'p1' : 'p2'}`);
+        const eyeL = document.getElementById(`p${id}-eye-l`);
+        const eyeR = document.getElementById(`p${id}-eye-r`);
+        const bubble = document.getElementById(`p${id}-bubble`);
+        robot.classList.add('glitch');
+        eyeL.classList.add('dead'); eyeR.classList.add('dead');
+        bubble.innerText = "تعطل النظام! 😵";
+        setTimeout(() => {
+            document.getElementById('result-desc').innerText = reason;
+            document.getElementById('result-overlay').classList.remove('hidden');
+        }, 1200);
+    }
+
+    init();
+</script>
+
 </body>
 </html>
