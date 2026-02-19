@@ -17,10 +17,10 @@
             background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
         }
         
-        /* تأثيرات الحقيبة التفاعلية */
+        /* Interactive Bag Effects */
         .bag-container {
             position: relative;
-            height: 800px;
+            height: 900px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -52,7 +52,7 @@
             pointer-events: auto;
         }
 
-        /* تصميم الخانات الزجاجي الاحترافي - بدون إطارات سوداء */
+        /* Glassmorphism Design */
         .node-content {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(12px);
@@ -64,20 +64,50 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            width: 160px;
+            width: 180px;
             cursor: pointer;
             transition: all 0.4s ease;
             color: white;
+            position: relative;
+            text-decoration: none; /* إزالة خط الرابط */
         }
 
         .node-content:hover {
             background: rgba(59, 130, 246, 0.2);
             border-color: rgba(59, 130, 246, 0.5);
             transform: translateY(-10px) scale(1.05);
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+            box-shadow: 0 0 25px rgba(59, 130, 246, 0.5);
         }
 
-        /* أنيميشن الطفو */
+        /* Tooltip Style for Descriptions */
+        .node-description {
+            position: absolute;
+            bottom: 110%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 240px;
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid rgba(59, 130, 246, 0.4);
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            line-height: 1.4;
+            color: #cbd5e1;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            z-index: 100;
+            text-align: center;
+        }
+
+        .node-content:hover .node-description {
+            opacity: 1;
+            visibility: visible;
+            bottom: 120%;
+        }
+
+        /* Float Animation */
         @keyframes float {
             0%, 100% { transform: translateY(0px); }
             50% { transform: translateY(-20px); }
@@ -87,7 +117,7 @@
             animation: float 5s ease-in-out infinite;
         }
 
-        /* نبضات الطاقة الخلفية */
+        /* Pulse Rings */
         .pulse-ring {
             position: absolute;
             border: 2px solid #3b82f6;
@@ -128,14 +158,14 @@
     </nav>
 
     <!-- Hero Section -->
-    <section id="home" class="hero-gradient min-h-[60vh] flex items-center pt-24">
+    <section id="home" class="hero-gradient min-h-[50vh] flex items-center pt-24">
         <div class="max-w-7xl mx-auto px-4 text-center">
             <h1 class="text-5xl md:text-7xl font-black mb-6">
                 حقيبة المستقبل <br>
                 <span class="text-blue-500">مشاريع العباقرة</span>
             </h1>
             <p class="text-slate-400 text-xl max-w-2xl mx-auto">
-                مجموعة مختارة من المواقع والمشاريع لطلاب الصف الخامس وحتى الثامن.
+                اضغط على الحقيبة لاستكشاف المشاريع التفاعلية. مرر الماوس فوق أي مشروع لقراءة النبذة عنه، واضغط عليه للانتقال إليه.
             </p>
         </div>
     </section>
@@ -144,7 +174,7 @@
     <section id="resources" class="py-10 relative">
         <div class="text-center mb-4">
             <button id="activateBtn" class="bg-blue-600/20 text-blue-400 border border-blue-600/50 px-6 py-2 rounded-full hover:bg-blue-600 hover:text-white transition-all font-bold">
-                اضغط لفتح الحقيبة
+                اضغط لفتح الحقيبة واكتشاف المشاريع
             </button>
         </div>
 
@@ -176,18 +206,74 @@
     </footer>
 
     <script>
-        // العناوين الجديدة من الصورة
+        // Resources with full descriptions and links
         const resources = [
-            { name: "ابن روبوتك", icon: "🛠️", color: "#3b82f6" },
-            { name: "الروبوت الذي بداخلي", icon: "🧠", color: "#6366f1" },
-            { name: "المحقق الذكي", icon: "🔍", color: "#2dd4bf" },
-            { name: "تخصصك المناسب", icon: "🎯", color: "#f59e0b" },
-            { name: "كيف يرى الروبوت عالمنا", icon: "👁️", color: "#ec4899" },
-            { name: "لعبة المسابقة بين الروبوتات", icon: "🎮", color: "#8b5cf6" },
-            { name: "مصنع الشوكولاتة (السرب الروبوتي)", icon: "🍫", color: "#fb7185" },
-            { name: "مطبخ الروبوت", icon: "🍳", color: "#10b981" },
-            { name: "هندسة شكل الروبوت", icon: "📐", color: "#facc15" },
-            { name: "مستقبلنا مع الروبوت", icon: "🚀", color: "#a855f7" }
+            { 
+                name: "ابنِ روبوتك", 
+                icon: "🛠️", 
+                url: "https://nadinabobdo-ai.github.io/build-your-robot/",
+                desc: "تطبيق تفاعلي لتعليم أساسيات تصميم وتركيب أجزاء الروبوت يدوياً، حيث تنتهي الرحلة بحصول الطالبة على وسام تقديري أو شهادة امتياز باسمها." 
+            },
+            { 
+                name: "الحلوى المسمومة", 
+                icon: "🍬", 
+                url: "https://nadinabobdo-ai.github.io/candies/",
+                desc: "تحدي ذكاء ممتع يعتمد على التفكير المنطقي لاكتشاف الحلوى السليمة وتجنب المسمومة." 
+            },
+            { 
+                name: "الروبوت الذي بداخلي", 
+                icon: "🧠", 
+                url: "https://nadinabobdo-ai.github.io/my-inside-rorot/",
+                desc: "اختبار تحليل شخصية فلسفي يربط بين خيارات المستخدم الأخلاقية ونظريات علم النفس، لتحديد نمط الشخصية." 
+            },
+            { 
+                name: "المحقق الذكي", 
+                icon: "🔍", 
+                url: "https://nadinabobdo-ai.github.io/the-smart/",
+                desc: "محاكاة تفاعلية تضع الطالب في دور المحقق لحل ألغاز تقنية وحياتية عبر جمع الأدلة وترتيبها منطقياً." 
+            },
+            { 
+                name: "تخصصك المناسب", 
+                icon: "🎯", 
+                url: "https://nadinabobdo-ai.github.io/your-perfect/",
+                desc: "أداة توجيه مهني تعتمد على اختبار ميول الطالب لاكتشاف المسار الهندسي الأنسب له (ميكانيكا، برمجة، أو إلكترونيات)." 
+            },
+            { 
+                name: "كيف يرى الروبوت عالمنا", 
+                icon: "👁️", 
+                url: "https://nadinabobdo-ai.github.io/how-does-it-see/",
+                desc: "تجربة تعليمية تشرح دور الحساسات كحواس للروبوت، وكيف يستخدمها لتجاوز العقبات." 
+            },
+            { 
+                name: "مسابقة الروبوتات", 
+                icon: "🏁", 
+                url: "https://nadinabobdo-ai.github.io/the-race/",
+                desc: "لعبة سباق ثنائية تعتمد على التنسيق والعمل الجماعي للوصول إلى خط النهاية في وقت متقارب." 
+            },
+            { 
+                name: "مصنع الشوكولاته", 
+                icon: "🍫", 
+                url: "https://nadinabobdo-ai.github.io/chocolate/",
+                desc: "محاكي متطور لإدارة خطوط الإنتاج الآلية، يعلم الطلاب كيفية تنظيم محطات العمل ومراقبة الجودة." 
+            },
+            { 
+                name: "مطبخ الروبوت", 
+                icon: "🍳", 
+                url: "https://nadinabobdo-ai.github.io/kitchen/",
+                desc: "منصة لتعلم أساسيات البرمجة بالأوامر، حيث تقوم الطالبة ببرمجة 'روبوت شيف' لتنفيذ وصفات حلويات." 
+            },
+            { 
+                name: "هندسة الشكل", 
+                icon: "📐", 
+                url: "https://nadinabobdo-ai.github.io/chose-the-shape/",
+                desc: "مختبر تصميم هندسي يسمح للطالب ببناء روبوت بمواصفات محددة لتناسب مهمة معينة." 
+            },
+            { 
+                name: "روبو XO", 
+                icon: "❌⭕", 
+                url: "https://nadinabobdo-ai.github.io/tiktaktoe/",
+                desc: "نسخة رقمية مطورة من لعبة 'إكس-أو' التقليدية، تعتمد على التنافس بين شخصيتين آليتين Lulu و Mimi." 
+            }
         ];
 
         const bagArea = document.getElementById('bagArea');
@@ -195,7 +281,7 @@
         const activateBtn = document.getElementById('activateBtn');
 
         function initResources() {
-            const radius = 320; 
+            const radius = 350; 
             const centerX = bagArea.offsetWidth / 2;
             const centerY = bagArea.offsetHeight / 2;
 
@@ -206,16 +292,18 @@
 
                 const node = document.createElement('div');
                 node.className = 'resource-node floating';
-                node.style.left = `calc(50% + ${x}px - 80px)`;
+                node.style.left = `calc(50% + ${x}px - 90px)`;
                 node.style.top = `calc(50% + ${y}px - 60px)`;
                 node.style.animationDelay = `${i * 0.3}s`;
 
+                // إضافة وسم <a> لجعل الخانة قابلة للنقر
                 node.innerHTML = `
-                    <div class="node-content">
+                    <a href="${res.url}" target="_blank" class="node-content">
+                        <div class="node-description">${res.desc}</div>
                         <span class="text-4xl mb-2">${res.icon}</span>
-                        <span class="font-bold text-xs text-center leading-tight">${res.name}</span>
+                        <span class="font-bold text-[11px] text-center leading-tight h-8 flex items-center">${res.name}</span>
                         <div class="w-8 h-1 bg-blue-500 mt-2 rounded-full opacity-50"></div>
-                    </div>
+                    </a>
                 `;
 
                 bagArea.appendChild(node);
@@ -232,7 +320,7 @@
             } else {
                 bagArea.classList.remove('active');
                 mainBag.style.transform = 'scale(1) rotate(0deg)';
-                activateBtn.textContent = 'اضغط لفتح الحقيبة';
+                activateBtn.textContent = 'اضغط لفتح الحقيبة واكتشاف المشاريع';
             }
         }
 
