@@ -5,17 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>نادي عباقرة الروبوت - رحلة استكشافية</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;900&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Cairo', sans-serif;
             scroll-behavior: smooth;
-            overflow: hidden; /* مغلق حتى يتم إدخال الكود */
+            overflow: hidden; /* مغلق حتى يتم إدخال كود الدخول */
             background-color: #0f172a;
             color: #f8fafc;
         }
         
-        /* شاشة الاستبيان */
+        /* شاشة الاستبيان الأولية للدخول */
         #surveyOverlay {
             position: fixed;
             top: 0;
@@ -58,7 +59,6 @@
         
         .bag-container { position: relative; height: 800px; display: flex; align-items: center; justify-content: center; perspective: 1000px; }
         
-        /* تصميم الحقيبة الجديد */
         .central-bag { 
             z-index: 50; 
             transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); 
@@ -80,8 +80,10 @@
         .node-content { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); padding: 15px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.1); display: flex; flex-direction: column; align-items: center; width: 180px; cursor: pointer; transition: 0.4s; color: white; text-decoration: none; position: relative; }
         .node-content:hover { background: rgba(59, 130, 246, 0.2); transform: translateY(-10px); box-shadow: 0 0 20px rgba(59, 130, 246, 0.4); }
 
-        .node-description { position: absolute; bottom: 110%; left: 50%; transform: translateX(-50%); width: 200px; background: rgba(15, 23, 42, 0.95); border: 1px solid #3b82f6; padding: 10px; border-radius: 12px; font-size: 0.75rem; opacity: 0; visibility: hidden; transition: 0.3s; z-index: 100; pointer-events: none; }
-        .node-content:hover .node-description { opacity: 1; visibility: visible; }
+        .info-bubble { background: rgba(30, 41, 59, 0.95); border: 2px solid #3b82f6; border-radius: 1rem; padding: 1rem; position: absolute; width: 220px; opacity: 0; transform: scale(0.9); transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); pointer-events: none; z-index: 10; }
+        .info-bubble.active { opacity: 1; transform: scale(1); }
+        .robot-part { cursor: pointer; transition: 0.3s; }
+        .robot-part:hover { filter: brightness(1.2) drop-shadow(0 0 10px #3b82f6); }
 
         .flip-card { height: 300px; perspective: 1000px; }
         .flip-card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.8s; transform-style: preserve-3d; }
@@ -90,48 +92,49 @@
         .flip-card-front { background: rgba(30, 41, 59, 0.5); border: 1px solid rgba(255, 255, 255, 0.1); }
         .flip-card-back { background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%); transform: rotateY(180deg); }
 
-        .info-bubble { background: rgba(30, 41, 59, 0.95); border: 2px solid #3b82f6; border-radius: 1rem; padding: 1rem; position: absolute; width: 220px; opacity: 0; transform: scale(0.9); transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); pointer-events: none; z-index: 10; }
-        .info-bubble.active { opacity: 1; transform: scale(1); }
-        .robot-part { cursor: pointer; transition: 0.3s; }
-        .robot-part:hover { filter: brightness(1.2) drop-shadow(0 0 10px #3b82f6); }
-
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
         .floating { animation: float 5s ease-in-out infinite; }
+
+        /* ستايل الشهادة */
+        .cert-canvas {
+            width: 100%;
+            max-width: 800px;
+            background: white;
+            padding: 40px;
+            border: 15px solid #1e3a8a;
+            position: relative;
+            color: #0f172a;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .cert-border-inner {
+            border: 2px solid #3b82f6;
+            padding: 30px;
+        }
     </style>
 </head>
 <body>
 
-    <!-- بوابة التحقق -->
+    <!-- بوابة التحقق الأولية للدخول (الرابط المحدث) -->
     <div id="surveyOverlay">
         <div class="text-center mb-6">
             <h2 class="text-3xl font-black text-blue-400 mb-2">مرحباً بكِ في نادي العباقرة 🤖</h2>
             <p class="text-slate-400">يرجى إكمال الاستبيان للحصول على كود الدخول</p>
         </div>
-
         <div class="survey-container">
-            <iframe 
-                src="https://docs.google.com/forms/d/e/1FAIpQLSd8uO9A9LqtX2tL7Vzj61QkXMWKY00uMIprfiUgdL7upLfk1Q/viewform?embedded=true" 
-                width="100%" 
-                height="100%" 
-                frameborder="0">جاري التحميل…</iframe>
+            <iframe width="100%" height="100%" src="https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAANAApR4xWlUMzVWS0lORjY5M1hKS0RFQUhQVDBFWTEyVi4u&embed=true" frameborder="0" marginwidth="0" marginheight="0" style="border: none; max-width:100%; max-height:100vh" allowfullscreen webkitallowfullscreen mozallowfullscreen msallowfullscreen></iframe>
         </div>
-
         <div class="verification-card">
-            <div id="waitTimer">
-                <p class="text-yellow-500 mb-2 font-bold">يرجى الانتظار <span id="secs">15</span> ثانية حتى يظهر مربع الكود...</p>
+            <div id="waitTimer"><p class="text-yellow-500 mb-2 font-bold">يرجى الانتظار <span id="secs">15</span> ثانية...</p></div>
+            <div id="codeEntry" class="hidden flex gap-2">
+                <input type="text" id="userInputCode" placeholder="أدخلي الكود هنا" class="flex-1 bg-slate-900 border border-blue-500 rounded-xl px-4 py-3 text-white outline-none">
+                <button id="submitCode" class="bg-blue-600 px-8 py-3 rounded-xl font-bold transition-all">دخول</button>
             </div>
-            <div id="codeEntry" class="hidden">
-                <p class="text-white mb-4 text-sm">أدخلي الكود الذي ظهر لكِ بعد إرسال الاستبيان:</p>
-                <div class="flex gap-2">
-                    <input type="text" id="userInputCode" placeholder="الكود السري هنا" class="flex-1 bg-slate-900 border border-blue-500 rounded-xl px-4 py-3 text-white outline-none focus:ring-2 ring-blue-500 transition-all">
-                    <button id="submitCode" class="bg-blue-600 hover:bg-blue-700 px-8 py-3 rounded-xl font-bold transition-all shadow-lg shadow-blue-600/30">دخول</button>
-                </div>
-                <p id="errorMessage" class="text-red-500 text-xs mt-3 hidden">الكود غير صحيح، تأكدي من إرسال الاستبيان أولاً!</p>
-            </div>
+            <p id="errorMessage" class="text-red-500 text-xs mt-3 hidden">الكود غير صحيح!</p>
         </div>
     </div>
 
-    <!-- محتوى الموقع الأصلي -->
+    <!-- النافبار -->
     <nav class="fixed w-full z-[100] bg-slate-900/80 backdrop-blur-lg border-b border-white/10">
         <div class="max-w-7xl mx-auto px-6 flex justify-between h-20 items-center">
             <div class="flex items-center space-x-3 space-x-reverse">
@@ -149,17 +152,17 @@
         </div>
     </nav>
 
-    <main id="mainBody">
-        <!-- Hero -->
+    <main>
+        <!-- قسم الهيرو -->
         <section id="home" class="hero-gradient min-h-screen flex items-center pt-24">
             <div class="max-w-7xl mx-auto px-4 text-center">
                 <h1 class="text-6xl md:text-8xl font-black mb-6 leading-tight">اصنعي <span class="text-blue-500">روبوتكِ</span> <br>وقودي المستقبل</h1>
-                <p class="text-slate-400 text-xl max-w-2xl mx-auto mb-10">مرحباً بكِ في نادي عباقرة الروبوت. رحلة تبدأ بفهم الآلة وتنتهي بابتكارها لخدمة البشرية.</p>
+                <p class="text-slate-400 text-xl max-w-2xl mx-auto mb-10">مرحباً بكِ في نادي عباقرة الروبوت. رحلة تبدأ بفهم الآلة وتنتهي بابتكارها.</p>
                 <a href="#intro" class="bg-blue-600 hover:bg-blue-700 text-white px-10 py-4 rounded-2xl font-bold transition-all shadow-xl shadow-blue-600/20 inline-block">ابدئي الرحلة الاستكشافية</a>
             </div>
         </section>
 
-        <!-- Intro -->
+        <!-- قسم المقدمة والاستكشاف -->
         <section id="intro" class="py-24 bg-slate-900/50">
             <div class="max-w-7xl mx-auto px-4">
                 <div class="text-center mb-16">
@@ -171,7 +174,7 @@
                     <div class="flip-card">
                         <div class="flip-card-inner">
                             <div class="flip-card-front"><span class="text-6xl mb-4">🤖</span><h3 class="text-2xl font-bold">تعريف الروبوت</h3></div>
-                            <div class="flip-card-back p-6">هو آلة ذكية صُممت لتنفيذ مهام محددة بدقة وسرعة، ويمكن برمجتها لتتفاعل مع محيطها.</div>
+                            <div class="flip-card-back p-6">آلة ذكية صُممت لتنفيذ مهام محددة بدقة، ويمكن برمجتها لتتفاعل مع محيطها.</div>
                         </div>
                     </div>
                     <div class="flip-card">
@@ -188,39 +191,30 @@
                     </div>
                 </div>
 
-                <!-- Robot Explorer -->
+                <!-- مستكشف الروبوت التفاعلي -->
                 <div class="relative max-w-xl mx-auto flex flex-col items-center">
-                    <h3 class="text-2xl font-bold mb-10 text-white">استكشفِ اجزاء الروبوت</h3>
+                    <h3 class="text-2xl font-bold mb-10 text-white text-center">استكشفِ أجزاء الروبوت التفاعلية</h3>
                     <div class="relative w-80 h-[500px] bg-blue-500/5 rounded-[3rem] border border-blue-500/20 flex items-center justify-center p-8">
-                        <!-- فقاعات المعلومات -->
                         <div id="b-head" class="info-bubble -top-10 -right-40"><b>الرأس:</b> يحتوي على العقل المدبر (المعالج) والكاميرات.</div>
-                        <div id="b-body" class="info-bubble top-1/3 -left-48"><b>الجسم:</b> يحتوي على البطارية والدوائر الكهربائية.</div>
-                        <div id="b-arms" class="info-bubble top-1/4 -right-48"><b>الأذرع:</b> هي المنفذات المسؤولة عن العمل اليدوي.</div>
-                        <div id="b-legs" class="info-bubble bottom-10 -right-48"><b>الأرجل:</b> المسؤولة عن التوازن والحركة من مكان لآخر.</div>
+                        <div id="b-body" class="info-bubble top-1/3 -left-48"><b>الجسم:</b> يحتوي على البطارية والدوائر الكهربائية الرئيسية.</div>
+                        <div id="b-arms" class="info-bubble top-1/4 -right-48"><b>الأذرع:</b> هي المنفذات المسؤولة عن العمل والتحريك.</div>
+                        <div id="b-legs" class="info-bubble bottom-10 -right-48"><b>الأرجل:</b> المسؤولة عن التوازن والحركة.</div>
                         
                         <svg viewBox="0 0 200 300" class="w-full h-full floating">
-                            <!-- Head -->
                             <g class="robot-part" onmouseover="showB('b-head')" onmouseout="hideB('b-head')">
                                 <rect x="65" y="10" width="70" height="50" rx="10" fill="#1e3a8a" stroke="#3b82f6" stroke-width="2"/>
-                                <circle cx="85" cy="35" r="5" fill="#60a5fa" />
-                                <circle cx="115" cy="35" r="5" fill="#60a5fa" />
+                                <circle cx="85" cy="35" r="5" fill="#60a5fa" /><circle cx="115" cy="35" r="5" fill="#60a5fa" />
                             </g>
-                            <!-- Body -->
                             <g class="robot-part" onmouseover="showB('b-body')" onmouseout="hideB('b-body')">
                                 <rect x="55" y="70" width="90" height="100" rx="15" fill="#1e293b" stroke="#3b82f6" stroke-width="2"/>
-                                <rect x="65" y="80" width="70" height="20" rx="5" fill="#3b82f6" opacity="0.2"/>
                             </g>
-                            <!-- Arms -->
                             <g class="robot-part" onmouseover="showB('b-arms')" onmouseout="hideB('b-arms')">
                                 <rect x="25" y="80" width="20" height="70" rx="8" fill="#1e3a8a" stroke="#3b82f6" stroke-width="1"/>
                                 <rect x="155" y="80" width="20" height="70" rx="8" fill="#1e3a8a" stroke="#3b82f6" stroke-width="1"/>
                             </g>
-                            <!-- Legs -->
                             <g class="robot-part" onmouseover="showB('b-legs')" onmouseout="hideB('b-legs')">
                                 <rect x="65" y="175" width="25" height="80" rx="10" fill="#1e3a8a" stroke="#3b82f6" stroke-width="1"/>
                                 <rect x="110" y="175" width="25" height="80" rx="10" fill="#1e3a8a" stroke="#3b82f6" stroke-width="1"/>
-                                <rect x="55" y="245" width="35" height="15" rx="5" fill="#1e293b" stroke="#3b82f6" stroke-width="1"/>
-                                <rect x="110" y="245" width="35" height="15" rx="5" fill="#1e293b" stroke="#3b82f6" stroke-width="1"/>
                             </g>
                         </svg>
                     </div>
@@ -228,107 +222,144 @@
             </div>
         </section>
 
-        <!-- UAE -->
+        <!-- قسم الإمارات -->
         <section id="uae" class="py-24 bg-slate-900">
             <div class="max-w-7xl mx-auto px-4">
                 <h2 class="text-4xl font-black mb-12 text-emerald-400 text-center">الإمارات: وطن الابتكار</h2>
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                    <div class="p-6 bg-white/5 rounded-3xl border border-white/10 hover:border-emerald-500 transition">
-                        <h4 class="font-bold text-white mb-2">استراتيجية الذكاء الاصطناعي</h4>
-                        <p class="text-xs text-slate-400">رؤية الإمارات لتكون المركز العالمي الأول بحلول 2031.</p>
-                    </div>
-                    <div class="p-6 bg-white/5 rounded-3xl border border-white/10 hover:border-emerald-500 transition">
-                        <h4 class="font-bold text-white mb-2">تحدي محمد بن زايد</h4>
-                        <p class="text-xs text-slate-400">أكبر مسابقة عالمية لابتكارات الروبوتات المتقدمة.</p>
-                    </div>
-                    <div class="p-6 bg-white/5 rounded-3xl border border-white/10 hover:border-emerald-500 transition">
-                        <h4 class="font-bold text-white mb-2">جامعة MBZUAI</h4>
-                        <p class="text-xs text-slate-400">أول جامعة في العالم مخصصة لأبحاث الذكاء الاصطناعي.</p>
-                    </div>
-                    <div class="p-6 bg-white/5 rounded-3xl border border-white/10 hover:border-emerald-500 transition">
-                        <h4 class="font-bold text-white mb-2">مليون مبرمج عربي</h4>
-                        <p class="text-xs text-slate-400">مبادرة أطلقها صاحب السمو الشيخ محمد بن راشد لتمكين الشباب.</p>
-                    </div>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 text-center">
+                    <div class="p-6 bg-white/5 rounded-3xl border border-white/10 hover:border-emerald-500 transition"><h4 class="font-bold text-white mb-2">استراتيجية الذكاء الاصطناعي</h4><p class="text-xs text-slate-400">رؤية الإمارات لتكون المركز العالمي الأول بحلول 2031.</p></div>
+                    <div class="p-6 bg-white/5 rounded-3xl border border-white/10 hover:border-emerald-500 transition"><h4 class="font-bold text-white mb-2">تحدي محمد بن زايد</h4><p class="text-xs text-slate-400">أكبر مسابقة عالمية لابتكارات الروبوتات المتقدمة.</p></div>
+                    <div class="p-6 bg-white/5 rounded-3xl border border-white/10 hover:border-emerald-500 transition"><h4 class="font-bold text-white mb-2">جامعة MBZUAI</h4><p class="text-xs text-slate-400">أول جامعة في العالم مخصصة لأبحاث الذكاء الاصطناعي.</p></div>
+                    <div class="p-6 bg-white/5 rounded-3xl border border-white/10 hover:border-emerald-500 transition"><h4 class="font-bold text-white mb-2">مليون مبرمج عربي</h4><p class="text-xs text-slate-400">تمكين الشباب العربي من لغات المستقبل.</p></div>
                 </div>
             </div>
         </section>
 
-        <!-- Resources -->
+        <!-- قسم حقيبة العباقرة -->
         <section id="resources" class="py-20 relative">
             <div class="max-w-7xl mx-auto px-4 text-center">
                 <h2 class="text-4xl font-black mb-4 text-blue-400">حقيبة العباقرة التفاعلية</h2>
                 <button id="toggleBagBtn" class="bg-blue-600 px-10 py-3 rounded-full font-bold shadow-lg hover:bg-blue-500 transition-all mb-10">افتحي الحقيبة الآن</button>
                 <div class="bag-container" id="bagArea">
-                    <!-- تصميم الحقيبة المحسن -->
                     <div class="central-bag floating" id="mainBag">
-                        <svg width="220" height="220" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <!-- ظل الحقيبة السفلي -->
-                            <ellipse cx="100" cy="180" rx="60" ry="10" fill="rgba(0,0,0,0.3)" />
-                            <!-- يد الحقيبة -->
-                            <path d="M60 70V55C60 35 75 25 100 25C125 25 140 35 140 55V70" stroke="#3b82f6" stroke-width="8" stroke-linecap="round"/>
-                            <!-- جسم الحقيبة الرئيسي -->
-                            <rect x="35" y="70" width="130" height="100" rx="25" fill="#1d4ed8" />
-                            <!-- جيب الحقيبة الأمامي -->
-                            <path d="M35 110C35 110 60 145 100 145C140 145 165 110 165 110V145C165 158.8 153.8 170 140 170H60C46.2 170 35 158.8 35 145V110Z" fill="#2563eb" />
-                            <!-- إبزيم الحقيبة (اللمسة اللطيفة) -->
-                            <circle cx="100" cy="115" r="12" fill="#60a5fa" />
-                            <circle cx="100" cy="115" r="6" fill="white" />
-                            <!-- لمعان على الحقيبة -->
-                            <rect x="50" y="85" width="20" height="5" rx="2.5" fill="white" opacity="0.3" />
-                        </svg>
+                        <svg width="220" height="220" viewBox="0 0 200 200" fill="none"><rect x="35" y="70" width="130" height="100" rx="25" fill="#1d4ed8" /><path d="M60 70V55C60 35 75 25 100 25C125 25 140 35 140 55V70" stroke="#3b82f6" stroke-width="8" stroke-linecap="round"/><circle cx="100" cy="115" r="12" fill="#60a5fa" /></svg>
                     </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- قسم الاستبيان والشهادة النهائي (يبقى في آخر الصفحة) -->
+        <section id="finalStep" class="py-24 bg-slate-900 border-t border-white/10">
+            <div class="max-w-7xl mx-auto px-4 text-center">
+                <h2 class="text-4xl font-black mb-6 text-blue-400">بوابة استلام الشهادة 🏆</h2>
+                <p class="text-slate-400 mb-10">أكملي الاستبيان أدناه لتحصلي على كود إصدار الشهادة الخاص بكِ.</p>
+                
+                <!-- نافذة الاستبيان النهائي -->
+                <div class="survey-container mx-auto mb-10" style="height: 500px; border: 2px solid rgba(59, 130, 246, 0.3);">
+                    <iframe width="100%" height="100%" src="https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAANAApR4xWlUOENHMVQzS09JOFdTNDhJWTJGWTBVMFlIVC4u&embed=true" frameborder="0" allowfullscreen></iframe>
+                </div>
+
+                <div id="certForm" class="max-w-md mx-auto bg-slate-800/50 p-8 rounded-3xl border border-blue-500/30">
+                    <div class="space-y-4">
+                        <input type="text" id="finalUserName" placeholder="اكتبي اسمكِ الكامل للشهادة" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white outline-none focus:ring-2 ring-blue-500 transition-all">
+                        <input type="text" id="finalCertCode" placeholder="أدخلي كود الشهادة" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white outline-none focus:ring-2 ring-blue-500 transition-all">
+                        <button id="generateCertBtn" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-4 rounded-xl font-bold transition-all shadow-lg">إصدار الشهادة</button>
+                    </div>
+                    <p id="certError" class="text-red-500 text-xs mt-3 hidden">يرجى التأكد من الاسم ومن صحة الكود!</p>
+                </div>
+
+                <!-- منطقة عرض الشهادة -->
+                <div id="certificateWrapper" class="mt-16 hidden">
+                    <div id="certToCapture" class="cert-canvas rounded-lg shadow-2xl">
+                        <div class="cert-border-inner flex flex-col items-center justify-center">
+                            <h1 class="text-3xl font-black text-blue-900 mb-4">شهادة إنجاز</h1>
+                            <p class="text-lg text-slate-600 mb-6">يمنح نادي عباقرة الروبوت هذه الشهادة للمبدعة:</p>
+                            <h2 id="displayNameOnCert" class="text-4xl font-black text-blue-600 border-b-4 border-blue-200 inline-block px-10 pb-2 mb-8">الاسم</h2>
+                            <p class="text-slate-500 italic max-w-sm mx-auto mb-10">تقديراً لاهتمامها وشغفها بعالم الروبوتات والذكاء الاصطناعي وإتمامها لجميع مراحل الرحلة الاستكشافية بنجاح.</p>
+                            <div class="flex justify-between w-full px-12">
+                                <div class="text-center"><div class="w-24 h-0.5 bg-slate-300 mb-1"></div><p class="text-[10px] text-slate-400">التاريخ: 2025</p></div>
+                                <div class="text-center"><div class="w-24 h-0.5 bg-slate-300 mb-1"></div><p class="text-[10px] text-blue-800 font-bold">إدارة النادي</p></div>
+                            </div>
+                        </div>
+                    </div>
+                    <button id="downloadCertBtn" class="mt-10 bg-blue-600 hover:bg-blue-700 text-white px-10 py-4 rounded-2xl font-bold shadow-xl transition-all mx-auto flex items-center gap-3">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        تحميل الشهادة PNG
+                    </button>
                 </div>
             </div>
         </section>
     </main>
 
     <script>
-        // نظام التحقق
-        const CODE = "ROBOT2025";
-        let countdown = 15;
-        const secs = document.getElementById('secs');
-        const waitTimer = document.getElementById('waitTimer');
-        const codeEntry = document.getElementById('codeEntry');
+        const LOGIN_CODE = "ROBOT2025";
+        const CERT_CODE = "WINNER2025"; 
 
+        // تيمر شاشة الدخول
+        let countdown = 15;
         const timer = setInterval(() => {
             countdown--;
-            secs.innerText = countdown;
+            document.getElementById('secs').innerText = countdown;
             if (countdown <= 0) {
                 clearInterval(timer);
-                waitTimer.classList.add('hidden');
-                codeEntry.classList.remove('hidden');
+                document.getElementById('waitTimer').classList.add('hidden');
+                document.getElementById('codeEntry').classList.remove('hidden');
             }
         }, 1000);
 
+        // كود الدخول للموقع
         document.getElementById('submitCode').onclick = () => {
             const val = document.getElementById('userInputCode').value.trim().toUpperCase();
-            if (val === CODE) {
+            if (val === LOGIN_CODE) {
                 document.getElementById('surveyOverlay').style.display = 'none';
                 document.body.style.overflow = 'auto';
-                sessionStorage.setItem('rob_access', 'true');
             } else {
                 document.getElementById('errorMessage').classList.remove('hidden');
             }
         };
 
-        if(sessionStorage.getItem('rob_access') === 'true') {
-            document.getElementById('surveyOverlay').style.display = 'none';
-            document.body.style.overflow = 'auto';
-        }
+        // تفاعلات أجزاء الروبوت
+        function showB(id) { document.getElementById(id).classList.add('active'); }
+        function hideB(id) { document.getElementById(id).classList.remove('active'); }
 
-        // محتويات الحقيبة (لم تتغير)
+        // إصدار الشهادة
+        document.getElementById('generateCertBtn').onclick = () => {
+            const name = document.getElementById('finalUserName').value.trim();
+            const code = document.getElementById('finalCertCode').value.trim().toUpperCase();
+            if (name.length > 2 && code === CERT_CODE) {
+                document.getElementById('displayNameOnCert').innerText = name;
+                document.getElementById('certificateWrapper').classList.remove('hidden');
+                document.getElementById('certForm').classList.add('hidden');
+                document.getElementById('certificateWrapper').scrollIntoView({ behavior: 'smooth' });
+            } else {
+                document.getElementById('certError').classList.remove('hidden');
+            }
+        };
+
+        // تحميل الشهادة كصورة
+        document.getElementById('downloadCertBtn').onclick = () => {
+            const cert = document.getElementById('certToCapture');
+            html2canvas(cert, { scale: 2 }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'شهادة_عباقرة_الروبوت.png';
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+            });
+        };
+
+        // تهيئة حقيبة المشاريع
         const resources = [
-            { name: "ابنِ روبوتك", icon: "🛠️", url: "https://nadinabobdo-ai.github.io/build-your-robot/", desc: "تعلم تركيب الروبوت." },
-            { name: "الحلوى المسمومة", icon: "🍬", url: "https://nadinabobdo-ai.github.io/candies/", desc: "لعبة منطق ذكية." },
-            { name: "الروبوت بداخلي", icon: "🧠", url: "https://nadinabobdo-ai.github.io/my-inside-rorot/", desc: "اختبار شخصية تقني." },
-            { name: "المحقق الذكي", icon: "🔍", url: "https://nadinabobdo-ai.github.io/the-smart/", desc: "حل الألغاز التقنية." },
-            { name: "تخصصك المناسب", icon: "🎯", url: "https://nadinabobdo-ai.github.io/your-perfect/", desc: "توجيه مهني للمستقبل." },
-            { name: "رؤية الروبوت", icon: "👁️", url: "https://nadinabobdo-ai.github.io/how-does-it-see/", desc: "كيف يرى الروبوت العالم؟" },
-            { name: "مسابقة الروبوتات", icon: "🏁", url: "https://nadinabobdo-ai.github.io/the-race/", desc: "سباق الروبوتات السريع." },
-            { name: "مصنع الشوكولاته", icon: "🍫", url: "https://nadinabobdo-ai.github.io/chocolate/", desc: "إدارة خطوط الإنتاج." },
-            { name: "مطبخ الروبوت", icon: "🍳", url: "https://nadinabobdo-ai.github.io/kitchen/", desc: "برمجة الروبوت الطباخ." },
-            { name: "هندسة الشكل", icon: "📐", url: "https://nadinabobdo-ai.github.io/chose-the-shape/", desc: "تصميم هياكل الروبوت." },
-            { name: "روبو XO", icon: "❌⭕", url: "https://nadinabobdo-ai.github.io/tiktaktoe/", desc: "تحدى الذكاء الاصطناعي." }
+            { name: "ابنِ روبوتك", icon: "🛠️", url: "https://nadinabobdo-ai.github.io/build-your-robot/" },
+            { name: "الحلوى المسمومة", icon: "🍬", url: "https://nadinabobdo-ai.github.io/candies/" },
+            { name: "الروبوت بداخلي", icon: "🧠", url: "https://nadinabobdo-ai.github.io/my-inside-rorot/" },
+            { name: "المحقق الذكي", icon: "🔍", url: "https://nadinabobdo-ai.github.io/the-smart/" },
+            { name: "تخصصك المناسب", icon: "🎯", url: "https://nadinabobdo-ai.github.io/your-perfect/" },
+            { name: "رؤية الروبوت", icon: "👁️", url: "https://nadinabobdo-ai.github.io/how-does-it-see/" },
+            { name: "مسابقة الروبوتات", icon: "🏁", url: "https://nadinabobdo-ai.github.io/the-race/" },
+            { name: "مصنع الشوكولاته", icon: "🍫", url: "https://nadinabobdo-ai.github.io/chocolate/" },
+            { name: "مطبخ الروبوت", icon: "🍳", url: "https://nadinabobdo-ai.github.io/kitchen/" },
+            { name: "هندسة الشكل", icon: "📐", url: "https://nadinabobdo-ai.github.io/chose-the-shape/" },
+            { name: "روبو XO", icon: "❌⭕", url: "https://nadinabobdo-ai.github.io/tiktaktoe/" }
         ];
 
         function initNodes() {
@@ -336,19 +367,11 @@
             resources.forEach((res, i) => {
                 const angle = (i / resources.length) * Math.PI * 2;
                 const r = 320;
-                const x = Math.cos(angle) * r;
-                const y = Math.sin(angle) * r;
                 const node = document.createElement('div');
                 node.className = 'resource-node floating';
-                node.style.left = `calc(50% + ${x}px - 90px)`;
-                node.style.top = `calc(50% + ${y}px - 50px)`;
-                node.style.animationDelay = `${i * 0.2}s`;
-                node.innerHTML = `
-                    <a href="${res.url}" target="_blank" class="node-content">
-                        <div class="node-description text-center">${res.desc}</div>
-                        <span class="text-3xl mb-1">${res.icon}</span>
-                        <span class="text-[10px] font-bold">${res.name}</span>
-                    </a>`;
+                node.style.left = `calc(50% + ${Math.cos(angle) * r}px - 90px)`;
+                node.style.top = `calc(50% + ${Math.sin(angle) * r}px - 50px)`;
+                node.innerHTML = `<a href="${res.url}" target="_blank" class="node-content"><span class="text-3xl mb-1">${res.icon}</span><span class="text-[10px] font-bold text-center">${res.name}</span></a>`;
                 bag.appendChild(node);
             });
         }
@@ -362,9 +385,6 @@
 
         document.getElementById('mainBag').onclick = toggleBag;
         document.getElementById('toggleBagBtn').onclick = toggleBag;
-
-        function showB(id) { document.getElementById(id).classList.add('active'); }
-        function hideB(id) { document.getElementById(id).classList.remove('active'); }
 
         window.onload = initNodes;
     </script>
