@@ -6,6 +6,8 @@
     <title>نادي عباقرة الروبوت - رحلة استكشافية</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- Add Chart.js for infographics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;900&display=swap" rel="stylesheet">
     <style>
         body {
@@ -57,28 +59,103 @@
         /* التصاميم الأصلية للموقع */
         .hero-gradient { background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%); }
         
-        .bag-container { position: relative; height: 800px; display: flex; align-items: center; justify-content: center; perspective: 1000px; }
+        .bag-container { position: relative; height: 800px; display: flex; align-items: center; justify-content: center; perspective: 1200px; }
         
+        /* تحسين شكل الحقيبة المحدث */
         .central-bag { 
             z-index: 50; 
             transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); 
             cursor: pointer;
-            filter: drop-shadow(0 15px 30px rgba(59, 130, 246, 0.4));
+            position: relative;
         }
+
+        .bag-body {
+            width: 200px;
+            height: 180px;
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            border-radius: 40px 40px 60px 60px;
+            box-shadow: 0 20px 50px rgba(37, 99, 235, 0.4), inset 0 -10px 20px rgba(0,0,0,0.2);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid rgba(255,255,255,0.1);
+        }
+
+        .bag-handle {
+            width: 100px;
+            height: 60px;
+            border: 10px solid #3b82f6;
+            border-bottom: none;
+            border-radius: 50px 50px 0 0;
+            position: absolute;
+            top: -45px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .bag-latch {
+            width: 40px;
+            height: 40px;
+            background: #fbbf24;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         .central-bag:hover { 
-            transform: scale(1.1) translateY(-10px); 
-            filter: drop-shadow(0 20px 40px rgba(59, 130, 246, 0.6));
+            transform: scale(1.05) rotate(2deg);
         }
+
         .bag-container.active .central-bag {
-            transform: scale(0.9);
-            filter: brightness(1.2) drop-shadow(0 0 20px rgba(59, 130, 246, 0.8));
+            transform: scale(0.85) translateY(20px);
+            filter: brightness(1.1);
         }
 
-        .resource-node { position: absolute; transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); opacity: 0; transform: scale(0); pointer-events: none; }
-        .bag-container.active .resource-node { opacity: 1; transform: scale(1); pointer-events: auto; }
+        /* توهج خلف الحقيبة عند الفتح */
+        .bag-glow {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.4) 0%, transparent 70%);
+            border-radius: 50%;
+            opacity: 0;
+            transition: 0.8s;
+            z-index: 40;
+        }
+        .bag-container.active .bag-glow {
+            opacity: 1;
+            transform: scale(2);
+        }
 
-        .node-content { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); padding: 15px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.1); display: flex; flex-direction: column; align-items: center; width: 180px; cursor: pointer; transition: 0.4s; color: white; text-decoration: none; position: relative; }
-        .node-content:hover { background: rgba(59, 130, 246, 0.2); transform: translateY(-10px); box-shadow: 0 0 20px rgba(59, 130, 246, 0.4); }
+        .resource-node { position: absolute; transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); opacity: 0; transform: scale(0) rotate(-45deg); pointer-events: none; }
+        .bag-container.active .resource-node { opacity: 1; transform: scale(1) rotate(0deg); pointer-events: auto; }
+
+        .node-content { 
+            background: rgba(30, 41, 59, 0.7); 
+            backdrop-filter: blur(12px); 
+            padding: 15px; 
+            border-radius: 24px; 
+            border: 1px solid rgba(59, 130, 246, 0.3); 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            width: 160px; 
+            cursor: pointer; 
+            transition: 0.4s; 
+            color: white; 
+            text-decoration: none; 
+            position: relative; 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        .node-content:hover { 
+            background: rgba(59, 130, 246, 0.3); 
+            transform: translateY(-10px) scale(1.1); 
+            box-shadow: 0 15px 30px rgba(59, 130, 246, 0.5); 
+            border-color: #60a5fa;
+        }
 
         .info-bubble { background: rgba(30, 41, 59, 0.95); border: 2px solid #3b82f6; border-radius: 1rem; padding: 1rem; position: absolute; width: 220px; opacity: 0; transform: scale(0.9); transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); pointer-events: none; z-index: 10; }
         .info-bubble.active { opacity: 1; transform: scale(1); }
@@ -111,11 +188,24 @@
             border: 2px solid #3b82f6;
             padding: 30px;
         }
+
+        /* Chart container styles */
+        .chart-card {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 20px;
+            transition: 0.3s;
+        }
+        .chart-card:hover {
+            border-color: rgba(59, 130, 246, 0.5);
+            background: rgba(30, 41, 59, 0.7);
+        }
     </style>
 </head>
 <body>
 
-    <!-- بوابة التحقق الأولية للدخول (الرابط المحدث) -->
+    <!-- بوابة التحقق الأولية للدخول -->
     <div id="surveyOverlay">
         <div class="text-center mb-6">
             <h2 class="text-3xl font-black text-blue-400 mb-2">مرحباً بكِ في نادي العباقرة 🤖</h2>
@@ -147,6 +237,7 @@
                 <a href="#home" class="hover:text-blue-400 transition">الرئيسية</a>
                 <a href="#intro" class="hover:text-blue-400 transition">عن الروبوت</a>
                 <a href="#uae" class="hover:text-emerald-400 transition">الإمارات</a>
+                <a href="#stats" class="hover:text-blue-400 transition">إحصاءات</a>
                 <a href="#resources" class="hover:text-blue-400 transition">المشاريع</a>
             </div>
         </div>
@@ -166,7 +257,7 @@
         <section id="intro" class="py-24 bg-slate-900/50">
             <div class="max-w-7xl mx-auto px-4">
                 <div class="text-center mb-16">
-                    <h2 class="text-4xl font-black mb-4 text-blue-400">ما هو الروبوت؟ وكيف يعمل؟</h2>
+                    <h2 class="text-4xl font-black mb-4 text-blue-400">ما هو الروبوت? وكيف يعمل؟</h2>
                     <p class="text-slate-400">اكتشفي المبادئ الأساسية عبر التفاعل مع العناصر أدناه</p>
                 </div>
 
@@ -223,38 +314,206 @@
         </section>
 
         <!-- قسم الإمارات -->
-        <section id="uae" class="py-24 bg-slate-900">
+<!-- ================== مبادرات الإمارات ================== -->
+<section id="uae-initiatives" class="py-20 bg-gradient-to-b from-slate-900 to-slate-950 text-center">
+    <div class="container mx-auto px-6">
+        <h2 class="text-3xl md:text-4xl font-bold text-white mb-12">
+            🇦🇪 مبادرات الإمارات في مجال الروبوتات والتكنولوجيا
+        </h2>
+
+        <div class="grid gap-8 md:grid-cols-3 lg:grid-cols-4">
+
+            <!-- UAE AI Strategy 2031 -->
+            <div class="p-6 bg-white/5 rounded-3xl border border-white/10 hover:border-emerald-500 transition">
+                <a href="https://ai.gov.ae/" target="_blank" rel="noopener noreferrer" class="block group">
+                    <h4 class="font-bold text-white mb-2 group-hover:text-emerald-400 transition flex items-center justify-center gap-1">
+                        استراتيجية الإمارات للذكاء الاصطناعي 2031
+                        <svg class="w-3 h-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                        </svg>
+                    </h4>
+                </a>
+                <p class="text-xs text-slate-400">
+                    تهدف إلى دمج الذكاء الاصطناعي في القطاعات الحكومية والصناعية لتعزيز الكفاءة والابتكار.
+                </p>
+            </div>
+
+            <!-- Dubai Future Foundation -->
+            <div class="p-6 bg-white/5 rounded-3xl border border-white/10 hover:border-emerald-500 transition">
+                <a href="https://www.dubaifuture.ae/" target="_blank" rel="noopener noreferrer" class="block group">
+                    <h4 class="font-bold text-white mb-2 group-hover:text-emerald-400 transition flex items-center justify-center gap-1">
+                        مؤسسة دبي للمستقبل
+                        <svg class="w-3 h-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                        </svg>
+                    </h4>
+                </a>
+                <p class="text-xs text-slate-400">
+                    تدعم تطوير الروبوتات والتقنيات المتقدمة من خلال مختبرات وتجارب مستقبلية في دبي.
+                </p>
+            </div>
+
+            <!-- MBZIRC -->
+            <div class="p-6 bg-white/5 rounded-3xl border border-white/10 hover:border-emerald-500 transition">
+                <a href="https://www.mbzirc.com/" target="_blank" rel="noopener noreferrer" class="block group">
+                    <h4 class="font-bold text-white mb-2 group-hover:text-emerald-400 transition flex items-center justify-center gap-1">
+                        التحدي الدولي للروبوتات (MBZIRC)
+                        <svg class="w-3 h-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                        </svg>
+                    </h4>
+                </a>
+                <p class="text-xs text-slate-400">
+                    مسابقة عالمية تقام في أبوظبي تركز على الأنظمة الذاتية والروبوتات المتقدمة.
+                </p>
+            </div>
+
+            <!-- UAE Centennial 2071 -->
+            <div class="p-6 bg-white/5 rounded-3xl border border-white/10 hover:border-emerald-500 transition">
+                <a href="https://uaecabinet.ae/en/details/centennial-2071" target="_blank" rel="noopener noreferrer" class="block group">
+                    <h4 class="font-bold text-white mb-2 group-hover:text-emerald-400 transition flex items-center justify-center gap-1">
+                        مئوية الإمارات 2071
+                        <svg class="w-3 h-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                        </svg>
+                    </h4>
+                </a>
+                <p class="text-xs text-slate-400">
+                    رؤية استراتيجية طويلة المدى لتعزيز الاقتصاد القائم على المعرفة والتكنولوجيا المتقدمة.
+                </p>
+            </div>
+
+        </div>
+    </div>
+</section>
+<!-- ================== نهاية القسم ================== -->
+
+        <!-- قسم إحصاءات الطلب على تخصصات الروبوتات -->
+        <section id="stats" class="py-24 bg-slate-900/80 border-t border-white/5">
             <div class="max-w-7xl mx-auto px-4">
-                <h2 class="text-4xl font-black mb-12 text-emerald-400 text-center">الإمارات: وطن الابتكار</h2>
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 text-center">
-                    <div class="p-6 bg-white/5 rounded-3xl border border-white/10 hover:border-emerald-500 transition"><h4 class="font-bold text-white mb-2">استراتيجية الذكاء الاصطناعي</h4><p class="text-xs text-slate-400">رؤية الإمارات لتكون المركز العالمي الأول بحلول 2031.</p></div>
-                    <div class="p-6 bg-white/5 rounded-3xl border border-white/10 hover:border-emerald-500 transition"><h4 class="font-bold text-white mb-2">تحدي محمد بن زايد</h4><p class="text-xs text-slate-400">أكبر مسابقة عالمية لابتكارات الروبوتات المتقدمة.</p></div>
-                    <div class="p-6 bg-white/5 rounded-3xl border border-white/10 hover:border-emerald-500 transition"><h4 class="font-bold text-white mb-2">جامعة MBZUAI</h4><p class="text-xs text-slate-400">أول جامعة في العالم مخصصة لأبحاث الذكاء الاصطناعي.</p></div>
-                    <div class="p-6 bg-white/5 rounded-3xl border border-white/10 hover:border-emerald-500 transition"><h4 class="font-bold text-white mb-2">مليون مبرمج عربي</h4><p class="text-xs text-slate-400">تمكين الشباب العربي من لغات المستقبل.</p></div>
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl font-black mb-4 text-blue-400">📊 إحصاءات الطلب على تخصصات الروبوتات في المستقبل</h2>
+                    <p class="text-slate-400 max-w-2xl mx-auto">نظرة تحليلية على سوق العمل العالمي والمحلي في مجالات الأتمتة والذكاء الاصطناعي.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
+                    <div class="chart-card">
+                        <h3 class="text-xl font-bold mb-6 text-white border-r-4 border-blue-500 pr-3">نمو الطلب المتوقع (5-10 سنوات)</h3>
+                        <canvas id="growthChart" height="250"></canvas>
+                    </div>
+
+                    <div class="chart-card">
+                        <h3 class="text-xl font-bold mb-6 text-white border-r-4 border-emerald-500 pr-3">متوسط الرواتب السنوية (دولار أمريكي)</h3>
+                        <canvas id="salaryChart" height="250"></canvas>
+                    </div>
+
+                    <div class="chart-card">
+                        <h3 class="text-xl font-bold mb-6 text-white border-r-4 border-purple-500 pr-3">أكثر الدول طلباً لخبراء الروبوتات</h3>
+                        <canvas id="countryChart" height="250"></canvas>
+                    </div>
+
+                    <div class="chart-card flex flex-col justify-center">
+                        <h3 class="text-xl font-bold mb-8 text-white border-r-4 border-orange-500 pr-3">المهارات الأكثر طلباً في سوق العمل</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="bg-slate-800 p-5 rounded-xl border border-white/5 hover:border-orange-500/50 transition">
+                                <div class="flex items-center gap-3 mb-2">
+                                    <span class="text-2xl">🧠</span>
+                                    <h4 class="text-sm font-bold text-white">تعلم الآلة</h4>
+                                </div>
+                                <p class="text-[10px] text-slate-400 leading-relaxed">تطوير خوارزميات تسمح للروبوت بالتعلم من البيانات واتخاذ قرارات ذكية. هي عصب الذكاء الاصطناعي وتستخدم في التنبؤ بسلوك الروبوت وتحسين أدائه تلقائياً.</p>
+                            </div>
+                            <div class="bg-slate-800 p-5 rounded-xl border border-white/5 hover:border-orange-500/50 transition">
+                                <div class="flex items-center gap-3 mb-2">
+                                    <span class="text-2xl">🐍</span>
+                                    <h4 class="text-sm font-bold text-white">برمجة Python</h4>
+                                </div>
+                                <p class="text-[10px] text-slate-400 leading-relaxed">اللغة الأكثر شعبية في مجال الروبوتات لبساطتها وتعدد مكتباتها. تُستخدم في كتابة منطق التحكم، معالجة الصور، وربط مكونات الذكاء الاصطناعي بالعتاد الصلب.</p>
+                            </div>
+                            <div class="bg-slate-800 p-5 rounded-xl border border-white/5 hover:border-orange-500/50 transition">
+                                <div class="flex items-center gap-3 mb-2">
+                                    <span class="text-2xl">🤖</span>
+                                    <h4 class="text-sm font-bold text-white">نظام تشغيل ROS</h4>
+                                </div>
+                                <p class="text-[10px] text-slate-400 leading-relaxed">إطار عمل يوفر الأدوات اللازمة لبناء تطبيقات الروبوت المعقدة. يسهل التواصل بين أجزاء الروبوت المختلفة (الحساسات والمحركات) وتنسيق المهام بينها بدقة.</p>
+                            </div>
+                            <div class="bg-slate-800 p-5 rounded-xl border border-white/5 hover:border-orange-500/50 transition">
+                                <div class="flex items-center gap-3 mb-2">
+                                    <span class="text-2xl">⚙️</span>
+                                    <h4 class="text-sm font-bold text-white">الأنظمة المدمجة</h4>
+                                </div>
+                                <p class="text-[10px] text-slate-400 leading-relaxed">تصميم وبرمجة المعالجات الدقيقة التي تتحكم مباشرة في العتاد. هي الجسر الواصل بين الكود البرمجي والقطع الإلكترونية، مما يضمن استجابة فورية وسريعة.</p>
+                            </div>
+                            <div class="bg-slate-800 p-5 rounded-xl border border-white/5 hover:border-orange-500/50 transition">
+                                <div class="flex items-center gap-3 mb-2">
+                                    <span class="text-2xl">👁️</span>
+                                    <h4 class="text-sm font-bold text-white">الرؤية الحاسوبية</h4>
+                                </div>
+                                <p class="text-[10px] text-slate-400 leading-relaxed">تمكين الروبوت من "رؤية" وفهم محيطه عبر الكاميرات. تُستخدم للتعرف على الأجسام، تتبع الوجوه، وتحديد المسارات في الروبوتات ذاتية القيادة.</p>
+                            </div>
+                            <div class="bg-slate-800 p-5 rounded-xl border border-white/5 hover:border-orange-500/50 transition">
+                                <div class="flex items-center gap-3 mb-2">
+                                    <span class="text-2xl">📡</span>
+                                    <h4 class="text-sm font-bold text-white">إنترنت الأشياء</h4>
+                                </div>
+                                <p class="text-[10px] text-slate-400 leading-relaxed">ربط الروبوتات بالشبكة السحابية لتبادل البيانات والتحكم عن بُعد. تساهم في بناء "مصانع ذكية" حيث تتواصل الآلات مع بعضها لتحقيق أعلى كفاءة إنتاجية.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- مصادر البيانات -->
+                <div class="bg-blue-900/20 border border-blue-500/20 p-8 rounded-3xl">
+                    <h4 class="text-lg font-bold mb-4 text-blue-300">🔗 مصادر البيانات والمراجع:</h4>
+                    <ul class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-slate-400">
+                        <li class="flex items-center gap-2"><span class="text-blue-500">●</span> <a href="https://www.weforum.org/reports/the-future-of-jobs-report-2023" target="_blank" class="hover:text-blue-400 underline decoration-blue-500/30 transition">تقرير مستقبل الوظائف 2023 - المنتدى الاقتصادي العالمي</a></li>
+                        <li class="flex items-center gap-2"><span class="text-blue-500">●</span> <a href="https://www.bls.gov/ooh/architecture-and-engineering/home.htm" target="_blank" class="hover:text-blue-400 underline decoration-blue-500/30 transition">توقعات التوظيف المهني - مكتب إحصاءات العمل الأمريكي</a></li>
+                        <li class="flex items-center gap-2"><span class="text-blue-500">●</span> <a href="https://www.mckinsey.com/featured-insights/future-of-work" target="_blank" class="hover:text-blue-400 underline decoration-blue-500/30 transition">دراسات مستقبل العمل والأتمتة - معهد ماكينزي العالمي</a></li>
+                        <li class="flex items-center gap-2"><span class="text-blue-500">●</span> <a href="https://u.ae/ar-ae/about-the-uae/strategies-initiatives-and-awards/federal-governments-strategies-and-plans/uae-strategy-for-artificial-intelligence" target="_blank" class="hover:text-blue-400 underline decoration-blue-500/30 transition">البوابة الرسمية لحكومة الإمارات - استراتيجية الذكاء الاصطناعي</a></li>
+                    </ul>
                 </div>
             </div>
         </section>
 
-        <!-- قسم حقيبة العباقرة -->
-        <section id="resources" class="py-20 relative">
+        <!-- قسم حقيبة العباقرة المطور -->
+        <section id="resources" class="py-20 relative overflow-hidden">
             <div class="max-w-7xl mx-auto px-4 text-center">
-                <h2 class="text-4xl font-black mb-4 text-blue-400">حقيبة العباقرة التفاعلية</h2>
-                <button id="toggleBagBtn" class="bg-blue-600 px-10 py-3 rounded-full font-bold shadow-lg hover:bg-blue-500 transition-all mb-10">افتحي الحقيبة الآن</button>
+                <div class="mb-12">
+                    <h2 class="text-5xl font-black mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400">حقيبة العباقرة التفاعلية</h2>
+                    <p class="text-slate-400 max-w-xl mx-auto">افتحي الحقيبة لتكتشفي عالم البرمجة والمشاريع الإبداعية</p>
+                </div>
+                
+                <button id="toggleBagBtn" class="relative z-[60] bg-blue-600 hover:bg-blue-500 text-white px-12 py-4 rounded-full font-black text-lg shadow-[0_10px_30px_rgba(37,99,235,0.4)] transition-all transform hover:scale-105 active:scale-95 mb-16">
+                    افتحي الحقيبة الآن 🎒
+                </button>
+
                 <div class="bag-container" id="bagArea">
+                    <div class="bag-glow"></div>
+                    
+                    <!-- الحقيبة المصممة يدوياً -->
                     <div class="central-bag floating" id="mainBag">
-                        <svg width="220" height="220" viewBox="0 0 200 200" fill="none"><rect x="35" y="70" width="130" height="100" rx="25" fill="#1d4ed8" /><path d="M60 70V55C60 35 75 25 100 25C125 25 140 35 140 55V70" stroke="#3b82f6" stroke-width="8" stroke-linecap="round"/><circle cx="100" cy="115" r="12" fill="#60a5fa" /></svg>
+                        <div class="bag-handle"></div>
+                        <div class="bag-body">
+                            <div class="bag-latch">
+                                <svg class="w-6 h-6 text-blue-900" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M10 2a5 5 0 00-5 5v2a2 2 0 00-2 2v5a2 2 0 002 2h10a2 2 0 002-2v-5a2 2 0 00-2-2V7a5 5 0 00-5-5zM7 7a3 3 0 016 0v2H7V7z" />
+                                </svg>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- قسم الاستبيان والشهادة النهائي (يبقى في آخر الصفحة) -->
+        <!-- قسم الاستبيان والشهادة النهائي -->
         <section id="finalStep" class="py-24 bg-slate-900 border-t border-white/10">
             <div class="max-w-7xl mx-auto px-4 text-center">
                 <h2 class="text-4xl font-black mb-6 text-blue-400">بوابة استلام الشهادة 🏆</h2>
                 <p class="text-slate-400 mb-10">أكملي الاستبيان أدناه لتحصلي على كود إصدار الشهادة الخاص بكِ.</p>
                 
-                <!-- نافذة الاستبيان النهائي -->
                 <div class="survey-container mx-auto mb-10" style="height: 500px; border: 2px solid rgba(59, 130, 246, 0.3);">
                     <iframe width="100%" height="100%" src="https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAANAApR4xWlUOENHMVQzS09JOFdTNDhJWTJGWTBVMFlIVC4u&embed=true" frameborder="0" allowfullscreen></iframe>
                 </div>
@@ -268,7 +527,6 @@
                     <p id="certError" class="text-red-500 text-xs mt-3 hidden">يرجى التأكد من الاسم ومن صحة الكود!</p>
                 </div>
 
-                <!-- منطقة عرض الشهادة -->
                 <div id="certificateWrapper" class="mt-16 hidden">
                     <div id="certToCapture" class="cert-canvas rounded-lg shadow-2xl">
                         <div class="cert-border-inner flex flex-col items-center justify-center">
@@ -313,6 +571,7 @@
             if (val === LOGIN_CODE) {
                 document.getElementById('surveyOverlay').style.display = 'none';
                 document.body.style.overflow = 'auto';
+                renderCharts();
             } else {
                 document.getElementById('errorMessage').classList.remove('hidden');
             }
@@ -369,9 +628,9 @@
                 const r = 320;
                 const node = document.createElement('div');
                 node.className = 'resource-node floating';
-                node.style.left = `calc(50% + ${Math.cos(angle) * r}px - 90px)`;
-                node.style.top = `calc(50% + ${Math.sin(angle) * r}px - 50px)`;
-                node.innerHTML = `<a href="${res.url}" target="_blank" class="node-content"><span class="text-3xl mb-1">${res.icon}</span><span class="text-[10px] font-bold text-center">${res.name}</span></a>`;
+                node.style.left = `calc(50% + ${Math.cos(angle) * r}px - 80px)`;
+                node.style.top = `calc(50% + ${Math.sin(angle) * r}px - 40px)`;
+                node.innerHTML = `<a href="${res.url}" target="_blank" class="node-content"><span class="text-4xl mb-2">${res.icon}</span><span class="text-xs font-black text-center">${res.name}</span></a>`;
                 bag.appendChild(node);
             });
         }
@@ -380,11 +639,66 @@
         function toggleBag() {
             open = !open;
             document.getElementById('bagArea').classList.toggle('active', open);
-            document.getElementById('toggleBagBtn').innerText = open ? "إغلاق الحقيبة" : "افتحي الحقيبة الآن";
+            document.getElementById('toggleBagBtn').innerText = open ? "إغلاق الحقيبة 🔐" : "افتحي الحقيبة الآن 🎒";
+            
+            // إضافة صوت أو اهتزاز بسيط إذا لزم الأمر
+            if(open) {
+                const bag = document.getElementById('mainBag');
+                bag.classList.remove('floating');
+                setTimeout(() => bag.classList.add('floating'), 100);
+            }
         }
 
         document.getElementById('mainBag').onclick = toggleBag;
         document.getElementById('toggleBagBtn').onclick = toggleBag;
+
+        function renderCharts() {
+            Chart.defaults.color = '#94a3b8';
+            Chart.defaults.font.family = 'Cairo';
+
+            new Chart(document.getElementById('growthChart'), {
+                type: 'line',
+                data: {
+                    labels: ['2023', '2024', '2025', '2027', '2030'],
+                    datasets: [{
+                        label: 'نسبة زيادة الطلب العالمي (%)',
+                        data: [15, 22, 28, 38, 52],
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+            });
+
+            new Chart(document.getElementById('salaryChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['الإمارات (مبتدئ)', 'الإمارات (خبير)', 'عالمياً (مبتدئ)', 'عالمياً (خبير)'],
+                    datasets: [{
+                        label: 'الراتب السنوي ($)',
+                        data: [50000, 125000, 75000, 155000],
+                        backgroundColor: ['#10b981', '#059669', '#3b82f6', '#2563eb'],
+                        borderRadius: 10
+                    }]
+                },
+                options: { responsive: true, plugins: { legend: { display: false } } }
+            });
+
+            new Chart(document.getElementById('countryChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['الولايات المتحدة', 'الصين', 'اليابان', 'الإمارات', 'ألمانيا'],
+                    datasets: [{
+                        data: [30, 25, 20, 15, 10],
+                        backgroundColor: ['#3b82f6', '#ef4444', '#f59e0b', '#10b981', '#8b5cf6'],
+                        borderWidth: 0
+                    }]
+                },
+                options: { cutout: '70%', responsive: true, plugins: { legend: { position: 'right' } } }
+            });
+        }
 
         window.onload = initNodes;
     </script>
